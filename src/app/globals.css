@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/*
+  A gallery commits to one ground. Photographs carry their own color
+  temperature, so the page sits on a warm off-white — a cool gray-blue
+  fights skin tones and low sun. No dark mode: the ground is the frame.
+*/
+:root {
+  --paper: #faf9f7;
+  --paper-sunk: #f3f1ed;
+  --ink: #1a1a18;
+  --ink-muted: #6e6b63;
+  --ink-faint: #a8a49a;
+  --rule: #e3e0da;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background-color: var(--ink);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  /* The small uppercase label that does most of the typographic work here. */
+  .label {
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* Underline that grows from the left on hover. */
+  .link-rule {
+    position: relative;
+  }
+  .link-rule::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.35em;
+    height: 1px;
+    width: 100%;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-gallery);
+  }
+  .link-rule:hover::after,
+  .link-rule[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
