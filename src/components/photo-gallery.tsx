@@ -7,41 +7,32 @@ import { photoYear, type Photo } from "@/lib/photos";
 
 const ALL = "All";
 
-type Align = "start" | "center" | "end";
 type Scale = "large" | "medium" | "small";
-type Placed = { photo: Photo; index: number; align: Align; scale: Scale };
+type Placed = { photo: Photo; index: number; scale: Scale };
 
 /**
- * One photograph per beat, never two on a screen. What keeps a single column
- * from reading as a feed is that no two consecutive frames share a size or an
- * edge: the eye is walked right, left, and back to centre down the page. It's
- * how the one-at-a-time sites hang a single image in a lot of paper, run as a
- * scroll instead of a click-through.
+ * One photograph per beat, centred, never two on a screen. It's how the
+ * one-at-a-time sites hang a single image in a lot of paper, run as a scroll
+ * instead of a click-through. What keeps the column from reading as a feed is
+ * that no two consecutive frames share a size.
  *
  * The sequence itself is hand-set in src/data/order.txt; position here decides
- * where a frame hangs. First and last are always centred and large.
+ * how large a frame hangs. First and last are always large.
  */
-const RHYTHM: readonly [Align, Scale][] = [
-  ["end", "medium"],
-  ["start", "small"],
-  ["center", "medium"],
-  ["end", "large"],
-  ["start", "medium"],
-  ["center", "small"],
-];
+const RHYTHM: readonly Scale[] = ["medium", "small", "medium", "large", "medium", "small"];
 
 function place(photos: Photo[]): Placed[] {
   const last = photos.length - 1;
-  return photos.map((photo, index) => {
-    if (index === 0 || index === last) return { photo, index, align: "center", scale: "large" };
-    const [align, scale] = RHYTHM[(index - 1) % RHYTHM.length];
-    return { photo, index, align, scale };
-  });
+  return photos.map((photo, index) => ({
+    photo,
+    index,
+    scale: index === 0 || index === last ? "large" : RHYTHM[(index - 1) % RHYTHM.length],
+  }));
 }
 
 // A portrait at a landscape's width stands far taller than the screen, so
 // each scale carries its own width per orientation. Phone widths keep the
-// stagger visible rather than collapsing every frame to full width.
+// size rhythm visible rather than collapsing every frame to full width.
 const WIDTH: Record<Scale, Record<Photo["orientation"], string>> = {
   large: { landscape: "w-full md:w-[64%]", portrait: "w-[84%] md:w-[40%]" },
   medium: { landscape: "w-[86%] md:w-[48%]", portrait: "w-[70%] md:w-[32%]" },
@@ -52,12 +43,6 @@ const SIZES: Record<Scale, Record<Photo["orientation"], string>> = {
   large: { landscape: "(max-width: 768px) 92vw, 60vw", portrait: "(max-width: 768px) 78vw, 38vw" },
   medium: { landscape: "(max-width: 768px) 80vw, 45vw", portrait: "(max-width: 768px) 65vw, 30vw" },
   small: { landscape: "(max-width: 768px) 65vw, 32vw", portrait: "(max-width: 768px) 52vw, 23vw" },
-};
-
-const JUSTIFY: Record<Align, string> = {
-  start: "justify-start",
-  center: "justify-center",
-  end: "justify-end",
 };
 
 export function PhotoGallery({
@@ -119,10 +104,10 @@ export function PhotoGallery({
         </div>
       )}
 
-      {placed.map(({ photo, index, align, scale }) => (
+      {placed.map(({ photo, index, scale }) => (
         <Reveal
           key={photo.slug}
-          className={`flex ${JUSTIFY[align]} mb-[18vh] last:mb-0 md:mb-[26vh] md:px-[5%]`}
+          className="flex justify-center mb-[18vh] last:mb-0 md:mb-[26vh]"
         >
           <Frame
             photo={photo}
