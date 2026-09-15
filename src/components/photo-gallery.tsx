@@ -12,22 +12,21 @@ const ALL = "All";
  * It's how the one-at-a-time sites hang a single image in a lot of paper, run
  * as a scroll instead of a click-through.
  *
- * Every frame fits one box: no wider than 62% of the page, no taller than 80%
- * of the window. Landscapes meet the width limit and portraits the height
- * limit, so a vertical frame hangs tall rather than being squeezed to a
- * landscape's height at half the area, and every frame is always seen whole.
- * The ratio comes in as a CSS variable per figure. Phones keep it simple.
+ * Every frame fits one box, and one rule sizes it at every window: the
+ * smallest of the page width, max(62% of the page, 560px), and 80% of the
+ * window's height times the frame's ratio. Landscapes meet the width limit
+ * and portraits the height limit, so a vertical frame hangs tall instead of
+ * being squeezed to a landscape's height at half the area, and every frame is
+ * always seen whole. The 560px floor is what keeps a phone from getting a
+ * 62% picture; it fades out on its own once 62% is wider than it, so there is
+ * no breakpoint and nothing jumps. The ratio comes in per figure as a CSS
+ * variable.
  */
-const BOX = "md:w-[min(62%,calc(80vh*var(--ratio)))]";
-
-const PHONE: Record<Photo["orientation"], string> = {
-  landscape: "w-full",
-  portrait: "w-[74%]",
-};
+const BOX = "w-[min(100%,max(62%,560px),calc(80vh*var(--ratio)))]";
 
 const SIZES: Record<Photo["orientation"], string> = {
-  landscape: "(max-width: 768px) 92vw, 58vw",
-  portrait: "(max-width: 768px) 68vw, 40vw",
+  landscape: "(max-width: 640px) 92vw, (max-width: 950px) 560px, 58vw",
+  portrait: "(max-width: 640px) 92vw, (max-width: 950px) 560px, 40vw",
 };
 
 export function PhotoGallery({
@@ -95,7 +94,7 @@ export function PhotoGallery({
           <Frame
             photo={photo}
             index={index}
-            width={`${PHONE[photo.orientation]} ${BOX}`}
+            width={BOX}
             sizes={SIZES[photo.orientation]}
             onOpen={() => setOpenIndex(index)}
           />
