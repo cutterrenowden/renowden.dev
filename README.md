@@ -2,7 +2,7 @@
 
 Photography portfolio. Next.js 16 (App Router, Turbopack), Tailwind v4, deployed on Vercel.
 
-The gallery lives at `/photography`; `/` redirects there.
+The gallery lives at `/photography`; `/` is a bare placeholder that links to it.
 
 ## Develop
 

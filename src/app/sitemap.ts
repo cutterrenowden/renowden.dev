@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
-// The gallery is the site. `/` only redirects here, so it stays out of the
-// sitemap rather than listing a URL that never serves a page.
+// The gallery is the site. `/` is a placeholder that points here and carries
+// the same canonical, so only the gallery is listed.
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
