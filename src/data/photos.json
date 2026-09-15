@@ -90,24 +90,6 @@
     "orientation": "portrait"
   },
   {
-    "slug": "mountain-storm-sunset-2-2",
-    "src": "/photography/mountain-storm-sunset-2-2.jpg",
-    "width": 2400,
-    "height": 1600,
-    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABwAwCdASoUAA0APu1orU2ppqSiMAgBMB2JZQAAWzd9yPVUv4AA/suKtkWfeNK/i58jSj/OJyo7pEsjJfPEqSsB1UcNDixsMAA=",
-    "title": null,
-    "collection": null,
-    "location": "Arizona",
-    "camera": "Sony a6700",
-    "lens": null,
-    "focalLength": "13mm",
-    "aperture": "f/4.0",
-    "shutter": "1/800s",
-    "iso": "ISO 6400",
-    "stack": null,
-    "orientation": "landscape"
-  },
-  {
     "slug": "dsc01783arw-edited",
     "src": "/photography/dsc01783arw-edited.jpg",
     "width": 2400,
@@ -122,6 +104,24 @@
     "aperture": "f/1.6",
     "shutter": "13s",
     "iso": "ISO 4000",
+    "stack": null,
+    "orientation": "landscape"
+  },
+  {
+    "slug": "mountain-storm-sunset-2-2",
+    "src": "/photography/mountain-storm-sunset-2-2.jpg",
+    "width": 2400,
+    "height": 1600,
+    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABwAwCdASoUAA0APu1orU2ppqSiMAgBMB2JZQAAWzd9yPVUv4AA/suKtkWfeNK/i58jSj/OJyo7pEsjJfPEqSsB1UcNDixsMAA=",
+    "title": null,
+    "collection": null,
+    "location": "Arizona",
+    "camera": "Sony a6700",
+    "lens": null,
+    "focalLength": "13mm",
+    "aperture": "f/4.0",
+    "shutter": "1/800s",
+    "iso": "ISO 6400",
     "stack": null,
     "orientation": "landscape"
   }
