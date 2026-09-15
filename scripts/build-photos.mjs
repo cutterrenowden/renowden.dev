@@ -85,17 +85,19 @@ function titleFromFilename(file) {
 function parseSettings(text) {
   const out = {};
   if (!text) return out;
-  for (const tok of text.split(/\s+/)) {
+  // ISO is the one two-word token, and its number (3200) would otherwise pass
+  // for a year, so it is lifted out before the rest is split on spaces.
+  const iso = text.match(/\bISO\s*(\d+)/i);
+  if (iso) out.iso = `ISO ${iso[1]}`;
+  for (const tok of text.replace(/\bISO\s*\d+/i, "").trim().split(/\s+/)) {
     let m;
     if ((m = tok.match(/^(\d+(?:\.\d+)?)mm$/i))) out.focalLength = `${Math.round(+m[1])}mm`;
     else if ((m = tok.match(/^f\/?(\d+(?:\.\d+)?)$/i))) out.aperture = `f/${Number((+m[1]).toFixed(1))}`;
     else if ((m = tok.match(/^(1\/\d+|\d+(?:\.\d+)?)s$/i))) out.shutter = `${m[1]}s`;
     else if ((m = tok.match(/^(?:x(\d+)|(\d+)x)$/i))) out.stack = +(m[1] ?? m[2]);
-    else if ((m = tok.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/)))
+    else if ((m = tok.match(/^((?:19|20)\d{2})(?:-(\d{2})(?:-(\d{2}))?)?$/)))
       out.date = new Date(Date.UTC(+m[1], m[2] ? +m[2] - 1 : 0, m[3] ? +m[3] : 1)).toISOString();
   }
-  const iso = text.match(/\bISO\s*(\d+)/i);
-  if (iso) out.iso = `ISO ${iso[1]}`;
   return out;
 }
 
