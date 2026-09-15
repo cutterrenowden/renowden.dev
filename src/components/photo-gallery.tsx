@@ -7,42 +7,25 @@ import type { Photo } from "@/lib/photos";
 
 const ALL = "All";
 
-type Scale = "large" | "medium" | "small";
-type Placed = { photo: Photo; index: number; scale: Scale };
-
 /**
- * One photograph per beat, centred, never two on a screen. It's how the
- * one-at-a-time sites hang a single image in a lot of paper, run as a scroll
- * instead of a click-through. What keeps the column from reading as a feed is
- * that no two consecutive frames share a size.
+ * One photograph per beat, centred, never two on a screen, all at one weight.
+ * It's how the one-at-a-time sites hang a single image in a lot of paper, run
+ * as a scroll instead of a click-through. Size stays uniform on purpose: a
+ * frame that hangs smaller reads as one the photographer rates lower, and the
+ * air between frames is the design, not the frames' sizes.
  *
- * The sequence itself is hand-set in src/data/order.txt; position here decides
- * how large a frame hangs. First and last are always large.
+ * A portrait at a landscape's width stands far taller than the screen, so
+ * each orientation carries its own width, chosen so both land at about the
+ * same height. The sequence itself is hand-set in src/data/order.txt.
  */
-const RHYTHM: readonly Scale[] = ["medium", "small", "medium", "large", "medium", "small"];
-
-function place(photos: Photo[]): Placed[] {
-  const last = photos.length - 1;
-  return photos.map((photo, index) => ({
-    photo,
-    index,
-    scale: index === 0 || index === last ? "large" : RHYTHM[(index - 1) % RHYTHM.length],
-  }));
-}
-
-// A portrait at a landscape's width stands far taller than the screen, so
-// each scale carries its own width per orientation. Phone widths keep the
-// size rhythm visible rather than collapsing every frame to full width.
-const WIDTH: Record<Scale, Record<Photo["orientation"], string>> = {
-  large: { landscape: "w-full md:w-[64%]", portrait: "w-[84%] md:w-[40%]" },
-  medium: { landscape: "w-[86%] md:w-[48%]", portrait: "w-[70%] md:w-[32%]" },
-  small: { landscape: "w-[70%] md:w-[34%]", portrait: "w-[56%] md:w-[24%]" },
+const WIDTH: Record<Photo["orientation"], string> = {
+  landscape: "w-full md:w-[62%]",
+  portrait: "w-[74%] md:w-[30%]",
 };
 
-const SIZES: Record<Scale, Record<Photo["orientation"], string>> = {
-  large: { landscape: "(max-width: 768px) 92vw, 60vw", portrait: "(max-width: 768px) 78vw, 38vw" },
-  medium: { landscape: "(max-width: 768px) 80vw, 45vw", portrait: "(max-width: 768px) 65vw, 30vw" },
-  small: { landscape: "(max-width: 768px) 65vw, 32vw", portrait: "(max-width: 768px) 52vw, 23vw" },
+const SIZES: Record<Photo["orientation"], string> = {
+  landscape: "(max-width: 768px) 92vw, 58vw",
+  portrait: "(max-width: 768px) 68vw, 28vw",
 };
 
 export function PhotoGallery({
@@ -59,8 +42,6 @@ export function PhotoGallery({
     () => (filter === ALL ? photos : photos.filter((p) => p.collection === filter)),
     [photos, filter]
   );
-
-  const placed = useMemo(() => place(visible), [visible]);
 
   // A photo's slug in the hash makes any frame in the set linkable. The hash is
   // a browser-owned value, so it is read as a subscription: once on mount, and
@@ -104,7 +85,7 @@ export function PhotoGallery({
         </div>
       )}
 
-      {placed.map(({ photo, index, scale }) => (
+      {visible.map((photo, index) => (
         <Reveal
           key={photo.slug}
           className="flex justify-center mb-[18vh] last:mb-0 md:mb-[26vh]"
@@ -112,8 +93,8 @@ export function PhotoGallery({
           <Frame
             photo={photo}
             index={index}
-            width={WIDTH[scale][photo.orientation]}
-            sizes={SIZES[scale][photo.orientation]}
+            width={WIDTH[photo.orientation]}
+            sizes={SIZES[photo.orientation]}
             onOpen={() => setOpenIndex(index)}
           />
         </Reveal>

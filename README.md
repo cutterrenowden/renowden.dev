@@ -28,9 +28,8 @@ EXIF the file carries into `src/data/photos.json`.
 `order.txt` is the curation list and it does two jobs:
 
 - **Only listed files are published**, top to bottom in the order given.
-- **Position sets size.** One photograph per beat, centred; each hangs at a
-  different size than the one before it, and the first and last are always
-  large. Moving a line in `order.txt` changes how large that photograph hangs.
+- **It is the sequence.** One photograph per beat, centred, all at one
+  weight. Moving a line in `order.txt` moves that photograph in the scroll.
 
 Add a title with `filename | Title` (the title also becomes the URL slug, so
 every frame is linkable at `/photography#slug`).
