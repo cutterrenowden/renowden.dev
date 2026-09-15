@@ -13,16 +13,21 @@
  * and recorded in src/data/photos.json with dimensions, a base64 blur
  * placeholder, and whatever EXIF the file carries.
  *
- * Sequencing and titles are hand-controlled via src/data/order.txt:
+ * Sequencing, titles, places and exposure are hand-controlled via
+ * src/data/order.txt:
  *
- *   # one photo per line: source filename, optionally "| Title"
- *   sedona_milkyway.png | Cathedral Rock, Sedona
- *   DSC01954.JPG
+ *   # one photo per line: filename | Title | Location | settings
+ *   sedona_milkyway.png | Cathedral Rock | Sedona, Arizona
+ *   DSC01954.JPG | | Colorado | 13mm f/2.2 1/800s ISO 160 2026-06-12
+ *
+ * Title and Location are optional. The settings field replaces whatever EXIF
+ * the file carries: space-separated tokens in any order for focal length,
+ * aperture, shutter, ISO and date.
  *
  * When the order file exists it is the curation list: only listed files are
  * published, in listed order — anything else in the source folder is skipped.
- * A title also becomes the photo's slug. Without an order file, every image
- * ships in filename order.
+ * The title (or, failing that, the location) becomes the photo's slug.
+ * Without an order file, every image ships in filename order.
  */
 import { readdir, mkdir, readFile, rm, writeFile, stat } from "node:fs/promises";
 import { join, extname, basename, relative } from "node:path";
@@ -31,6 +36,11 @@ import exifr from "exifr";
 
 const MAX_EDGE = 2400;
 const QUALITY = 82;
+// The portfolio is shot on one body. A file whose EXIF names another camera
+// has been through a phone on its way here, and that phone's lens and
+// exposure are not this photograph's, so only EXIF from this body is kept.
+const CAMERA = "Sony a6700";
+const CAMERA_EXIF_MODEL = /ILCE-6700/i;
 const EXTS = new Set([".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"]);
 
 const SRC = process.argv[2] ?? "photos-src";
@@ -71,7 +81,24 @@ function titleFromFilename(file) {
   return raw.replace(/[_-]+/g, " ").trim();
 }
 
-/** Parse order.txt into [{file, title}]. Missing file → empty list. */
+/** "13mm f/2.2 1/800s ISO 160 2026-06-12" → the manifest fields it names. */
+function parseSettings(text) {
+  const out = {};
+  if (!text) return out;
+  for (const tok of text.split(/\s+/)) {
+    let m;
+    if ((m = tok.match(/^(\d+(?:\.\d+)?)mm$/i))) out.focalLength = `${Math.round(+m[1])}mm`;
+    else if ((m = tok.match(/^f\/?(\d+(?:\.\d+)?)$/i))) out.aperture = `f/${Number((+m[1]).toFixed(1))}`;
+    else if ((m = tok.match(/^(1\/\d+|\d+(?:\.\d+)?)s$/i))) out.shutter = `${m[1]}s`;
+    else if ((m = tok.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/)))
+      out.date = new Date(Date.UTC(+m[1], m[2] ? +m[2] - 1 : 0, m[3] ? +m[3] : 1)).toISOString();
+  }
+  const iso = text.match(/\bISO\s*(\d+)/i);
+  if (iso) out.iso = `ISO ${iso[1]}`;
+  return out;
+}
+
+/** Parse order.txt into [{file, title, location, settings}]. Missing file → empty list. */
 async function loadOrder() {
   let raw;
   try {
@@ -84,8 +111,8 @@ async function loadOrder() {
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith("#"))
     .map((line) => {
-      const [file, title] = line.split("|").map((part) => part.trim());
-      return { file, title: title || null };
+      const [file, title, location, settings] = line.split("|").map((part) => part.trim());
+      return { file, title: title || null, location: location || null, settings: parseSettings(settings) };
     });
 }
 
@@ -110,12 +137,11 @@ async function main() {
 
   // Hand-ordering: listed files lead in listed order, the rest follow.
   const order = await loadOrder();
-  const titles = new Map();
-  const listed = new Set(order.map((o) => o.file.toLowerCase()));
+  const entries = new Map(order.map((o) => [o.file.toLowerCase(), o]));
+  const listed = new Set(entries.keys());
   if (order.length) {
     const rank = new Map(order.map((o, i) => [o.file.toLowerCase(), i]));
     for (const o of order) {
-      if (o.title) titles.set(o.file.toLowerCase(), o.title);
       if (!files.some((f) => basename(f).toLowerCase() === o.file.toLowerCase()))
         console.warn(`! order.txt lists "${o.file}" but no such file in ${SRC}`);
     }
@@ -142,9 +168,10 @@ async function main() {
     // A file the order.txt names but leaves untitled is untitled on purpose —
     // only unlisted files fall back to the filename heuristic.
     const base = basename(file).toLowerCase();
-    const givenTitle = titles.get(base) ?? null;
-    const title = listed.has(base) ? givenTitle : titleFromFilename(file);
-    let slug = slugify(givenTitle ?? basename(file, extname(file)));
+    const entry = entries.get(base);
+    const title = listed.has(base) ? entry.title : titleFromFilename(file);
+    const location = entry?.location ?? null;
+    let slug = slugify(title ?? location ?? basename(file, extname(file)));
     if (!slug || seen.has(slug)) slug = `${slug || "photo"}-${i}`;
     seen.add(slug);
 
@@ -185,6 +212,17 @@ async function main() {
       ],
     }).catch(() => null)) ?? {};
 
+    const ownExif = CAMERA_EXIF_MODEL.test(exif.Model ?? "");
+    const exposure = {
+      lens: ownExif ? exif.LensModel ?? null : null,
+      focalLength: ownExif && exif.FocalLength ? `${Math.round(exif.FocalLength)}mm` : null,
+      aperture: ownExif && exif.FNumber ? `f/${Number(exif.FNumber.toFixed(1))}` : null,
+      shutter: ownExif ? formatShutter(exif.ExposureTime) : null,
+      iso: ownExif && exif.ISO ? `ISO ${exif.ISO}` : null,
+      date: exif.DateTimeOriginal ? new Date(exif.DateTimeOriginal).toISOString() : null,
+      ...entry?.settings,
+    };
+
     photos.push({
       slug,
       src: `/photography/${slug}.jpg`,
@@ -193,15 +231,9 @@ async function main() {
       blurDataURL: `data:image/webp;base64,${blur.toString("base64")}`,
       title,
       collection,
-      camera: [exif.Make, exif.Model].filter(Boolean).join(" ").trim() || null,
-      lens: exif.LensModel ?? null,
-      focalLength: exif.FocalLength ? `${Math.round(exif.FocalLength)}mm` : null,
-      aperture: exif.FNumber ? `f/${Number(exif.FNumber.toFixed(1))}` : null,
-      shutter: formatShutter(exif.ExposureTime),
-      iso: exif.ISO ? `ISO ${exif.ISO}` : null,
-      date: exif.DateTimeOriginal
-        ? new Date(exif.DateTimeOriginal).toISOString()
-        : null,
+      location,
+      camera: CAMERA,
+      ...exposure,
       orientation: info.width >= info.height ? "landscape" : "portrait",
     });
 

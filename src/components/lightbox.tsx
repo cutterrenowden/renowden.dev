@@ -87,6 +87,10 @@ export function Lightbox({ photos, index, onClose, onNavigate }: Props) {
 
   const exif = exifLine(photo);
   const year = photoYear(photo);
+  const headline = photo.title ?? photo.location ?? photo.collection;
+  // Where it was made sits with the exposure once the headline is a title;
+  // when the place is the headline it isn't repeated.
+  const detail = [photo.title ? photo.location : null, exif].filter(Boolean).join("  ·  ");
 
   return (
     <div
@@ -165,13 +169,13 @@ export function Lightbox({ photos, index, onClose, onNavigate }: Props) {
       </div>
 
       <footer className="relative z-20 flex shrink-0 flex-col gap-1.5 px-6 py-6 text-center md:px-10 md:py-8">
-        {(photo.title || photo.collection) && (
+        {headline && (
           <p className="font-display text-lg leading-snug text-ink md:text-xl">
-            {photo.title ?? photo.collection}
+            {headline}
             {year && <span className="text-ink-faint">, {year}</span>}
           </p>
         )}
-        {exif && <p className="label text-ink-faint">{exif}</p>}
+        {detail && <p className="label text-ink-faint">{detail}</p>}
       </footer>
 
       {/* Warm the neighbours so arrow-keying through the set never stutters. */}

@@ -146,6 +146,7 @@ function Frame({
 }) {
   const year = photoYear(photo);
   const title = photo.title ?? photo.collection;
+  const where = [photo.location, year].filter(Boolean).join(", ");
 
   return (
     <figure className={width}>
@@ -171,13 +172,13 @@ function Frame({
 
       {/* Stated, not hovered, the way every reference site captions: a plate
           number so untitled frames still read as part of a sequence, then the
-          title if there is one, then the year off to the right. */}
-      <figcaption className="mt-3 flex items-baseline justify-between gap-6">
+          title if there is one, then place and year off to the right. */}
+      <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
         <span className="label flex min-w-0 gap-4 leading-relaxed text-ink-muted">
           <span className="shrink-0 tabular-nums">{String(index + 1).padStart(2, "0")}</span>
           {title && <span className="min-w-0">{title}</span>}
         </span>
-        {year && <span className="label shrink-0 text-ink-muted">{year}</span>}
+        {where && <span className="label min-w-0 text-right leading-relaxed text-ink-muted">{where}</span>}
       </figcaption>
     </figure>
   );

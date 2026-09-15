@@ -8,6 +8,7 @@ export type Photo = {
   blurDataURL: string;
   title: string | null;
   collection: string | null;
+  location: string | null;
   camera: string | null;
   lens: string | null;
   focalLength: string | null;

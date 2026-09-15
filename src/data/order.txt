@@ -1,10 +1,14 @@
 # Curation list for /photography — only files listed here are published,
 # top to bottom is the hand-set sequence, first line leads the gallery.
-# Format: source filename, optionally "| Title" (the title also becomes the slug).
-sedona_milkyway_full_crop_no_house.png | Cathedral Rock, Sedona
+#
+# Format: filename | Title | Location | settings
+#   Title and Location are optional; leave a field empty to skip it.
+#   settings replace the file's EXIF, as space-separated tokens in any order:
+#   13mm f/2.2 1/800s ISO 160 2026-06-12
+sedona_milkyway_full_crop_no_house.png | Cathedral Rock | Sedona, Arizona
 DSC00404-10 2.jpg
-DSC01954.JPG | Rocky Mountain National Park
-IMG_4259 3.jpg
+DSC01954.JPG | Rocky Mountain National Park | Colorado
+IMG_4259 3.jpg | | Amazon Rainforest, Ecuador
 DSC01929-3.jpg
 mountain_storm_sunset-2 2.png
 DSC01783.ARW_edited.jpg
