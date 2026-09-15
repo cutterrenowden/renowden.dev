@@ -18,11 +18,11 @@
  *
  *   # one photo per line: filename | Title | Location | settings
  *   sedona_milkyway.png | Cathedral Rock | Sedona, Arizona
- *   DSC01954.JPG | | Colorado | 13mm f/2.2 1/800s ISO 160 2026-06-12
+ *   DSC01954.JPG | | Colorado | 13mm f/2.2 1/800s ISO 160
  *
  * Title and Location are optional. The settings field replaces whatever EXIF
  * the file carries: space-separated tokens in any order for focal length,
- * aperture, shutter, ISO, date, and a stack count (x40) for stacked frames.
+ * aperture, shutter, ISO, and a stack count (x40) for stacked frames.
  *
  * When the order file exists it is the curation list: only listed files are
  * published, in listed order — anything else in the source folder is skipped.
@@ -81,12 +81,11 @@ function titleFromFilename(file) {
   return raw.replace(/[_-]+/g, " ").trim();
 }
 
-/** "13mm f/2.2 1/800s ISO 160 x40 2026-06-12" → the manifest fields it names. */
+/** "13mm f/2.2 1/800s ISO 160 x40" → the manifest fields it names. */
 function parseSettings(text) {
   const out = {};
   if (!text) return out;
-  // ISO is the one two-word token, and its number (3200) would otherwise pass
-  // for a year, so it is lifted out before the rest is split on spaces.
+  // ISO is the one two-word token, so it is lifted out before the split.
   const iso = text.match(/\bISO\s*(\d+)/i);
   if (iso) out.iso = `ISO ${iso[1]}`;
   for (const tok of text.replace(/\bISO\s*\d+/i, "").trim().split(/\s+/)) {
@@ -95,8 +94,6 @@ function parseSettings(text) {
     else if ((m = tok.match(/^f\/?(\d+(?:\.\d+)?)$/i))) out.aperture = `f/${Number((+m[1]).toFixed(1))}`;
     else if ((m = tok.match(/^(1\/\d+|\d+(?:\.\d+)?)s$/i))) out.shutter = `${m[1]}s`;
     else if ((m = tok.match(/^(?:x(\d+)|(\d+)x)$/i))) out.stack = +(m[1] ?? m[2]);
-    else if ((m = tok.match(/^((?:19|20)\d{2})(?:-(\d{2})(?:-(\d{2}))?)?$/)))
-      out.date = new Date(Date.UTC(+m[1], m[2] ? +m[2] - 1 : 0, m[3] ? +m[3] : 1)).toISOString();
   }
   return out;
 }
@@ -211,7 +208,6 @@ async function main() {
         "FNumber",
         "ExposureTime",
         "ISO",
-        "DateTimeOriginal",
       ],
     }).catch(() => null)) ?? {};
 
@@ -223,7 +219,6 @@ async function main() {
       shutter: ownExif ? formatShutter(exif.ExposureTime) : null,
       iso: ownExif && exif.ISO ? `ISO ${exif.ISO}` : null,
       stack: null,
-      date: exif.DateTimeOriginal ? new Date(exif.DateTimeOriginal).toISOString() : null,
       ...entry?.settings,
     };
 

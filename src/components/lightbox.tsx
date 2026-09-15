@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
-import { exifLine, photoYear, type Photo } from "@/lib/photos";
+import { exifLine, type Photo } from "@/lib/photos";
 
 type Props = {
   photos: Photo[];
@@ -86,7 +86,6 @@ export function Lightbox({ photos, index, onClose, onNavigate }: Props) {
   ].filter((p, i, arr) => p.slug !== photo.slug && arr.findIndex((q) => q.slug === p.slug) === i);
 
   const exif = exifLine(photo);
-  const year = photoYear(photo);
   const headline = photo.title ?? photo.location ?? photo.collection;
   // Where it was made sits with the exposure once the headline is a title;
   // when the place is the headline it isn't repeated.
@@ -172,7 +171,6 @@ export function Lightbox({ photos, index, onClose, onNavigate }: Props) {
         {headline && (
           <p className="font-display text-lg leading-snug text-ink md:text-xl">
             {headline}
-            {year && <span className="text-ink-faint">, {year}</span>}
           </p>
         )}
         {detail && <p className="label text-ink-faint">{detail}</p>}

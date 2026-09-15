@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Lightbox } from "@/components/lightbox";
-import { photoYear, type Photo } from "@/lib/photos";
+import type { Photo } from "@/lib/photos";
 
 const ALL = "All";
 
@@ -144,9 +144,8 @@ function Frame({
   sizes: string;
   onOpen: () => void;
 }) {
-  const year = photoYear(photo);
   const title = photo.title ?? photo.collection;
-  const where = [photo.location, year].filter(Boolean).join(", ");
+  const where = photo.location;
 
   return (
     <figure className={width}>
@@ -172,7 +171,7 @@ function Frame({
 
       {/* Stated, not hovered, the way every reference site captions: a plate
           number so untitled frames still read as part of a sequence, then the
-          title if there is one, then place and year off to the right. */}
+          title if there is one, then the place off to the right. */}
       <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
         <span className="label flex min-w-0 gap-4 leading-relaxed text-ink-muted">
           <span className="shrink-0 tabular-nums">{String(index + 1).padStart(2, "0")}</span>

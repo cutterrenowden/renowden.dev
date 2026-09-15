@@ -17,7 +17,6 @@ export type Photo = {
   iso: string | null;
   /** Frames stacked into the final image, for astro work; null for a single exposure. */
   stack: number | null;
-  date: string | null;
   orientation: "landscape" | "portrait";
 };
 
@@ -39,8 +38,4 @@ export function exifLine(photo: Photo): string {
   ]
     .filter(Boolean)
     .join("  ·  ");
-}
-
-export function photoYear(photo: Photo): string | null {
-  return photo.date ? new Date(photo.date).getFullYear().toString() : null;
 }
