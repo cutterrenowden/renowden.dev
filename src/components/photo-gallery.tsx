@@ -10,22 +10,24 @@ const ALL = "All";
 /**
  * One photograph per beat, centred, never two on a screen, all at one weight.
  * It's how the one-at-a-time sites hang a single image in a lot of paper, run
- * as a scroll instead of a click-through. Size stays uniform on purpose: a
- * frame that hangs smaller reads as one the photographer rates lower, and the
- * air between frames is the design, not the frames' sizes.
+ * as a scroll instead of a click-through.
  *
- * A portrait at a landscape's width stands far taller than the screen, so
- * each orientation carries its own width, chosen so both land at about the
- * same height. The sequence itself is hand-set in src/data/order.txt.
+ * Every frame fits one box: no wider than 62% of the page, no taller than 80%
+ * of the window. Landscapes meet the width limit and portraits the height
+ * limit, so a vertical frame hangs tall rather than being squeezed to a
+ * landscape's height at half the area, and every frame is always seen whole.
+ * The ratio comes in as a CSS variable per figure. Phones keep it simple.
  */
-const WIDTH: Record<Photo["orientation"], string> = {
-  landscape: "w-full md:w-[62%]",
-  portrait: "w-[74%] md:w-[30%]",
+const BOX = "md:w-[min(62%,calc(80vh*var(--ratio)))]";
+
+const PHONE: Record<Photo["orientation"], string> = {
+  landscape: "w-full",
+  portrait: "w-[74%]",
 };
 
 const SIZES: Record<Photo["orientation"], string> = {
   landscape: "(max-width: 768px) 92vw, 58vw",
-  portrait: "(max-width: 768px) 68vw, 28vw",
+  portrait: "(max-width: 768px) 68vw, 40vw",
 };
 
 export function PhotoGallery({
@@ -93,7 +95,7 @@ export function PhotoGallery({
           <Frame
             photo={photo}
             index={index}
-            width={WIDTH[photo.orientation]}
+            width={`${PHONE[photo.orientation]} ${BOX}`}
             sizes={SIZES[photo.orientation]}
             onOpen={() => setOpenIndex(index)}
           />
@@ -129,7 +131,10 @@ function Frame({
   const where = photo.location;
 
   return (
-    <figure className={width}>
+    <figure
+      className={width}
+      style={{ "--ratio": photo.width / photo.height } as React.CSSProperties}
+    >
       <button
         onClick={onOpen}
         aria-label={`Expand ${title ?? `plate ${index + 1}`}`}
