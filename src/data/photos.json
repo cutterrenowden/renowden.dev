@@ -54,22 +54,22 @@
     "orientation": "landscape"
   },
   {
-    "slug": "img-4259-3",
-    "src": "/photography/img-4259-3.jpg",
-    "width": 1800,
-    "height": 2400,
-    "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABsAPu1kqU4ppaOiMAgBMB2JZQCdMtDDTa8h98ywRM/rdV4g55gAAP3eFoT+p1gtsr+JVnfCXTrjhqXfaYjS3fWgFQZZEQHuM+tpvnBRn9DUhCRmT6UdykK/4MQUJjngZVgF4Bpj5EdmwEwkLYRoD4e5seNXZ3bFcjwAAAA=",
+    "slug": "mountain-storm-sunset-2-2",
+    "src": "/photography/mountain-storm-sunset-2-2.jpg",
+    "width": 2400,
+    "height": 1600,
+    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABwAwCdASoUAA0APu1orU2ppqSiMAgBMB2JZQAAWzd9yPVUv4AA/suKtkWfeNK/i58jSj/OJyo7pEsjJfPEqSsB1UcNDixsMAA=",
     "title": null,
     "collection": null,
-    "location": "Amazon Rainforest, Ecuador",
+    "location": "Arizona",
     "camera": "Sony a6700",
     "lens": null,
-    "focalLength": "7mm",
-    "aperture": "f/1.8",
-    "shutter": "1/40s",
-    "iso": "ISO 500",
+    "focalLength": "13mm",
+    "aperture": "f/4.0",
+    "shutter": "1/800s",
+    "iso": "ISO 6400",
     "stack": null,
-    "orientation": "portrait"
+    "orientation": "landscape"
   },
   {
     "slug": "dsc01929-3",
@@ -90,6 +90,24 @@
     "orientation": "portrait"
   },
   {
+    "slug": "img-4259-3",
+    "src": "/photography/img-4259-3.jpg",
+    "width": 1800,
+    "height": 2400,
+    "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABsAPu1kqU4ppaOiMAgBMB2JZQCdMtDDTa8h98ywRM/rdV4g55gAAP3eFoT+p1gtsr+JVnfCXTrjhqXfaYjS3fWgFQZZEQHuM+tpvnBRn9DUhCRmT6UdykK/4MQUJjngZVgF4Bpj5EdmwEwkLYRoD4e5seNXZ3bFcjwAAAA=",
+    "title": null,
+    "collection": null,
+    "location": "Amazon Rainforest, Ecuador",
+    "camera": "Sony a6700",
+    "lens": null,
+    "focalLength": "7mm",
+    "aperture": "f/1.8",
+    "shutter": "1/40s",
+    "iso": "ISO 500",
+    "stack": null,
+    "orientation": "portrait"
+  },
+  {
     "slug": "dsc01783arw-edited",
     "src": "/photography/dsc01783arw-edited.jpg",
     "width": 2400,
@@ -104,24 +122,6 @@
     "aperture": "f/1.6",
     "shutter": "13s",
     "iso": "ISO 4000",
-    "stack": null,
-    "orientation": "landscape"
-  },
-  {
-    "slug": "mountain-storm-sunset-2-2",
-    "src": "/photography/mountain-storm-sunset-2-2.jpg",
-    "width": 2400,
-    "height": 1600,
-    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABwAwCdASoUAA0APu1orU2ppqSiMAgBMB2JZQAAWzd9yPVUv4AA/suKtkWfeNK/i58jSj/OJyo7pEsjJfPEqSsB1UcNDixsMAA=",
-    "title": null,
-    "collection": null,
-    "location": "Arizona",
-    "camera": "Sony a6700",
-    "lens": null,
-    "focalLength": "13mm",
-    "aperture": "f/4.0",
-    "shutter": "1/800s",
-    "iso": "ISO 6400",
     "stack": null,
     "orientation": "landscape"
   }
