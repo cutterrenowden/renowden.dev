@@ -169,7 +169,7 @@ export function Lightbox({ photos, index, onClose, onNavigate }: Props) {
 
       <footer className="relative z-20 flex shrink-0 flex-col gap-1.5 px-6 py-6 text-center md:px-10 md:py-8">
         {headline && (
-          <p className="font-display text-lg leading-snug text-ink md:text-xl">
+          <p className="label text-ink-muted">
             {headline}
           </p>
         )}

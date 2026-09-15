@@ -23,7 +23,6 @@
   --color-rule: var(--rule);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
 
   --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
 }
