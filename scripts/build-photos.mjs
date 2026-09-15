@@ -22,7 +22,7 @@
  *
  * Title and Location are optional. The settings field replaces whatever EXIF
  * the file carries: space-separated tokens in any order for focal length,
- * aperture, shutter, ISO and date.
+ * aperture, shutter, ISO, date, and a stack count (x40) for stacked frames.
  *
  * When the order file exists it is the curation list: only listed files are
  * published, in listed order — anything else in the source folder is skipped.
@@ -81,7 +81,7 @@ function titleFromFilename(file) {
   return raw.replace(/[_-]+/g, " ").trim();
 }
 
-/** "13mm f/2.2 1/800s ISO 160 2026-06-12" → the manifest fields it names. */
+/** "13mm f/2.2 1/800s ISO 160 x40 2026-06-12" → the manifest fields it names. */
 function parseSettings(text) {
   const out = {};
   if (!text) return out;
@@ -90,6 +90,7 @@ function parseSettings(text) {
     if ((m = tok.match(/^(\d+(?:\.\d+)?)mm$/i))) out.focalLength = `${Math.round(+m[1])}mm`;
     else if ((m = tok.match(/^f\/?(\d+(?:\.\d+)?)$/i))) out.aperture = `f/${Number((+m[1]).toFixed(1))}`;
     else if ((m = tok.match(/^(1\/\d+|\d+(?:\.\d+)?)s$/i))) out.shutter = `${m[1]}s`;
+    else if ((m = tok.match(/^(?:x(\d+)|(\d+)x)$/i))) out.stack = +(m[1] ?? m[2]);
     else if ((m = tok.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/)))
       out.date = new Date(Date.UTC(+m[1], m[2] ? +m[2] - 1 : 0, m[3] ? +m[3] : 1)).toISOString();
   }
@@ -219,6 +220,7 @@ async function main() {
       aperture: ownExif && exif.FNumber ? `f/${Number(exif.FNumber.toFixed(1))}` : null,
       shutter: ownExif ? formatShutter(exif.ExposureTime) : null,
       iso: ownExif && exif.ISO ? `ISO ${exif.ISO}` : null,
+      stack: null,
       date: exif.DateTimeOriginal ? new Date(exif.DateTimeOriginal).toISOString() : null,
       ...entry?.settings,
     };

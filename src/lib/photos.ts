@@ -15,6 +15,8 @@ export type Photo = {
   aperture: string | null;
   shutter: string | null;
   iso: string | null;
+  /** Frames stacked into the final image, for astro work; null for a single exposure. */
+  stack: number | null;
   date: string | null;
   orientation: "landscape" | "portrait";
 };
@@ -27,7 +29,14 @@ export function collections(list: Photo[] = photos): string[] {
 
 /** The single line of shooting data shown under an expanded photo. */
 export function exifLine(photo: Photo): string {
-  return [photo.camera, photo.focalLength, photo.aperture, photo.shutter, photo.iso]
+  return [
+    photo.camera,
+    photo.focalLength,
+    photo.aperture,
+    photo.shutter,
+    photo.stack ? `${photo.stack}-frame stack` : null,
+    photo.iso,
+  ]
     .filter(Boolean)
     .join("  ·  ");
 }

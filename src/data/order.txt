@@ -4,8 +4,8 @@
 # Format: filename | Title | Location | settings
 #   Title and Location are optional; leave a field empty to skip it.
 #   settings replace the file's EXIF, as space-separated tokens in any order:
-#   13mm f/2.2 1/800s ISO 160 2026-06-12
-sedona_milkyway_full_crop_no_house.png | Cathedral Rock | Sedona, Arizona
+#   13mm f/2.2 1/800s ISO 160 2026-06-12     (x40 = a 40-frame stack)
+sedona_milkyway_full_crop_no_house.png | Cathedral Rock | Sedona, Arizona | 13mm f/1.6 10s ISO 3200 x40
 DSC00404-10 2.jpg
 DSC01954.JPG | Rocky Mountain National Park | Colorado
 IMG_4259 3.jpg | | Amazon Rainforest, Ecuador

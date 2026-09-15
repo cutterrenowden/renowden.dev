@@ -10,10 +10,11 @@
     "location": "Sedona, Arizona",
     "camera": "Sony a6700",
     "lens": null,
-    "focalLength": null,
-    "aperture": null,
-    "shutter": null,
-    "iso": null,
+    "focalLength": "13mm",
+    "aperture": "f/1.6",
+    "shutter": "10s",
+    "iso": "ISO 3200",
+    "stack": 40,
     "date": null,
     "orientation": "landscape"
   },
@@ -32,6 +33,7 @@
     "aperture": "f/2.8",
     "shutter": "1/500s",
     "iso": "ISO 125",
+    "stack": null,
     "date": "2025-08-19T10:08:42.000Z",
     "orientation": "landscape"
   },
@@ -50,6 +52,7 @@
     "aperture": "f/2.2",
     "shutter": "1/800s",
     "iso": "ISO 160",
+    "stack": null,
     "date": "2026-06-12T08:36:06.000Z",
     "orientation": "landscape"
   },
@@ -68,6 +71,7 @@
     "aperture": null,
     "shutter": null,
     "iso": null,
+    "stack": null,
     "date": "2025-07-24T22:35:47.000Z",
     "orientation": "portrait"
   },
@@ -86,6 +90,7 @@
     "aperture": null,
     "shutter": null,
     "iso": null,
+    "stack": null,
     "date": null,
     "orientation": "portrait"
   },
@@ -104,6 +109,7 @@
     "aperture": null,
     "shutter": null,
     "iso": null,
+    "stack": null,
     "date": null,
     "orientation": "landscape"
   },
@@ -122,6 +128,7 @@
     "aperture": "f/1.6",
     "shutter": "13s",
     "iso": "ISO 4000",
+    "stack": null,
     "date": "2026-05-16T06:04:23.000Z",
     "orientation": "landscape"
   }
