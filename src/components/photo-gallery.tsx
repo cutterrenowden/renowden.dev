@@ -7,24 +7,58 @@ import { photoYear, type Photo } from "@/lib/photos";
 
 const ALL = "All";
 
-type Placed = { photo: Photo; index: number };
+type Align = "start" | "center" | "end";
+type Scale = "large" | "medium" | "small";
+type Placed = { photo: Photo; index: number; align: Align; scale: Scale };
 
 /**
- * Deterministic masonry: each photo drops into the currently shortest column,
- * measured by aspect ratio (heights are known from the manifest, so this is
- * SSR-safe — no layout measuring, no reflow). Array order stays the hand-set
- * sequence: it drives the lightbox and fills the columns top-first.
+ * One photograph per beat, never two on a screen. What keeps a single column
+ * from reading as a feed is that no two consecutive frames share a size or an
+ * edge: the eye is walked right, left, and back to centre down the page. It's
+ * how the one-at-a-time sites hang a single image in a lot of paper, run as a
+ * scroll instead of a click-through.
+ *
+ * The sequence itself is hand-set in src/data/order.txt; position here decides
+ * where a frame hangs. First and last are always centred and large.
  */
-function distribute(photos: Photo[], columnCount: number): Placed[][] {
-  const columns: Placed[][] = Array.from({ length: columnCount }, () => []);
-  const heights = new Array(columnCount).fill(0);
-  photos.forEach((photo, index) => {
-    const target = heights.indexOf(Math.min(...heights));
-    columns[target].push({ photo, index });
-    heights[target] += photo.height / photo.width;
+const RHYTHM: readonly [Align, Scale][] = [
+  ["end", "medium"],
+  ["start", "small"],
+  ["center", "medium"],
+  ["end", "large"],
+  ["start", "medium"],
+  ["center", "small"],
+];
+
+function place(photos: Photo[]): Placed[] {
+  const last = photos.length - 1;
+  return photos.map((photo, index) => {
+    if (index === 0 || index === last) return { photo, index, align: "center", scale: "large" };
+    const [align, scale] = RHYTHM[(index - 1) % RHYTHM.length];
+    return { photo, index, align, scale };
   });
-  return columns;
 }
+
+// A portrait at a landscape's width stands far taller than the screen, so
+// each scale carries its own width per orientation. Phone widths keep the
+// stagger visible rather than collapsing every frame to full width.
+const WIDTH: Record<Scale, Record<Photo["orientation"], string>> = {
+  large: { landscape: "w-full md:w-[64%]", portrait: "w-[84%] md:w-[40%]" },
+  medium: { landscape: "w-[86%] md:w-[48%]", portrait: "w-[70%] md:w-[32%]" },
+  small: { landscape: "w-[70%] md:w-[34%]", portrait: "w-[56%] md:w-[24%]" },
+};
+
+const SIZES: Record<Scale, Record<Photo["orientation"], string>> = {
+  large: { landscape: "(max-width: 768px) 92vw, 60vw", portrait: "(max-width: 768px) 78vw, 38vw" },
+  medium: { landscape: "(max-width: 768px) 80vw, 45vw", portrait: "(max-width: 768px) 65vw, 30vw" },
+  small: { landscape: "(max-width: 768px) 65vw, 32vw", portrait: "(max-width: 768px) 52vw, 23vw" },
+};
+
+const JUSTIFY: Record<Align, string> = {
+  start: "justify-start",
+  center: "justify-center",
+  end: "justify-end",
+};
 
 export function PhotoGallery({
   photos,
@@ -35,35 +69,31 @@ export function PhotoGallery({
 }) {
   const [filter, setFilter] = useState<string>(ALL);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [columnCount, setColumnCount] = useState(2);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const update = () => setColumnCount(mq.matches ? 1 : 2);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
 
   const visible = useMemo(
     () => (filter === ALL ? photos : photos.filter((p) => p.collection === filter)),
     [photos, filter]
   );
 
-  const columns = useMemo(
-    () => distribute(visible, columnCount),
-    [visible, columnCount]
-  );
+  const placed = useMemo(() => place(visible), [visible]);
 
-  // A photo's slug in the hash makes any frame in the set linkable.
+  // A photo's slug in the hash makes any frame in the set linkable. The hash is
+  // a browser-owned value, so it is read as a subscription: once on mount, and
+  // again whenever someone navigates to another slug. Writing the hash below
+  // uses replaceState, which fires no hashchange, so the two never loop.
   useEffect(() => {
-    const slug = window.location.hash.slice(1);
-    if (!slug) return;
-    const i = photos.findIndex((p) => p.slug === slug);
-    if (i >= 0) {
-      setFilter(ALL);
-      setOpenIndex(i);
-    }
+    const openFromHash = () => {
+      const slug = window.location.hash.slice(1);
+      if (!slug) return;
+      const i = photos.findIndex((p) => p.slug === slug);
+      if (i >= 0) {
+        setFilter(ALL);
+        setOpenIndex(i);
+      }
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
   }, [photos]);
 
   useEffect(() => {
@@ -89,20 +119,20 @@ export function PhotoGallery({
         </div>
       )}
 
-      <div className="flex gap-4 md:gap-6 xl:gap-8">
-        {columns.map((column, c) => (
-          <div key={c} className="flex min-w-0 flex-1 flex-col">
-            {column.map(({ photo, index }) => (
-              <Frame
-                key={photo.slug}
-                photo={photo}
-                index={index}
-                onOpen={() => setOpenIndex(index)}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+      {placed.map(({ photo, index, align, scale }) => (
+        <Reveal
+          key={photo.slug}
+          className={`flex ${JUSTIFY[align]} mb-[18vh] last:mb-0 md:mb-[26vh] md:px-[5%]`}
+        >
+          <Frame
+            photo={photo}
+            index={index}
+            width={WIDTH[scale][photo.orientation]}
+            sizes={SIZES[scale][photo.orientation]}
+            onOpen={() => setOpenIndex(index)}
+          />
+        </Reveal>
+      ))}
 
       {openIndex !== null && (
         <Lightbox
@@ -119,13 +149,58 @@ export function PhotoGallery({
 function Frame({
   photo,
   index,
+  width,
+  sizes,
   onOpen,
 }: {
   photo: Photo;
   index: number;
+  width: string;
+  sizes: string;
   onOpen: () => void;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const year = photoYear(photo);
+  const title = photo.title ?? photo.collection;
+
+  return (
+    <figure className={width}>
+      <button
+        onClick={onOpen}
+        aria-label={`Expand ${title ?? `plate ${index + 1}`}`}
+        className="group block w-full cursor-zoom-in text-left"
+      >
+        <div className="overflow-hidden bg-paper-sunk">
+          <Image
+            src={photo.src}
+            alt={title ?? "Photograph by Cutter Renowden"}
+            width={photo.width}
+            height={photo.height}
+            placeholder="blur"
+            blurDataURL={photo.blurDataURL}
+            priority={index === 0}
+            sizes={sizes}
+            className="w-full transition-transform duration-[1400ms] ease-[var(--ease-gallery)] group-hover:scale-[1.015]"
+          />
+        </div>
+      </button>
+
+      {/* Stated, not hovered, the way every reference site captions: a plate
+          number so untitled frames still read as part of a sequence, then the
+          title if there is one, then the year off to the right. */}
+      <figcaption className="mt-3 flex items-baseline justify-between gap-6">
+        <span className="label flex min-w-0 gap-4 leading-relaxed text-ink-muted">
+          <span className="shrink-0 tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+          {title && <span className="min-w-0">{title}</span>}
+        </span>
+        {year && <span className="label shrink-0 text-ink-muted">{year}</span>}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Fades a block up as it enters, once. */
+function Reveal({ className, children }: { className?: string; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -138,46 +213,23 @@ function Frame({
           io.disconnect();
         }
       },
-      { rootMargin: "120px" }
+      { rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  const year = photoYear(photo);
-  const caption = photo.title ?? photo.collection;
-
   return (
-    <button
+    <div
       ref={ref}
-      onClick={onOpen}
-      aria-label={`Expand ${photo.title ?? "photograph"}`}
-      className="group mb-4 block w-full text-left md:mb-6 xl:mb-8"
+      className={className}
       style={{
         opacity: shown ? 1 : 0,
-        transform: shown ? "none" : "translateY(14px)",
-        transition: "opacity 0.9s var(--ease-gallery), transform 0.9s var(--ease-gallery)",
+        transform: shown ? "none" : "translateY(18px)",
+        transition: "opacity 1.1s var(--ease-gallery), transform 1.1s var(--ease-gallery)",
       }}
     >
-      <div className="relative overflow-hidden bg-paper-sunk">
-        <Image
-          src={photo.src}
-          alt={photo.title ?? "Photograph by Cutter Renowden"}
-          width={photo.width}
-          height={photo.height}
-          placeholder="blur"
-          blurDataURL={photo.blurDataURL}
-          loading={index < 6 ? "eager" : "lazy"}
-          sizes="(max-width: 640px) 100vw, 50vw"
-          className="w-full transition-transform duration-[1200ms] ease-[var(--ease-gallery)] group-hover:scale-[1.02]"
-        />
-      </div>
-      {(caption || year) && (
-        <div className="mt-3 flex items-baseline justify-between gap-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
-          {caption && <span className="label truncate text-ink-muted">{caption}</span>}
-          {year && <span className="label ml-auto shrink-0 text-ink-faint">{year}</span>}
-        </div>
-      )}
-    </button>
+      {children}
+    </div>
   );
 }

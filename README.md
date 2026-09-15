@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# renowden.dev
 
-## Getting Started
+Photography portfolio. Next.js 16 (App Router, Turbopack), Tailwind v4, deployed on Vercel.
 
-First, run the development server:
+The gallery lives at `/photography`; `/` redirects there.
+
+## Develop
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Adding photographs
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Exports never go into `public/` by hand. Drop full-size files in a source folder
+(`photos-src/`, flat or one subfolder per collection), list the ones you want
+published in `src/data/order.txt`, then:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run photos photos-src
+```
 
-## Learn More
+That resizes each image to 2400px on the long edge, writes it to
+`public/photography/`, and records dimensions, a blur placeholder, and whatever
+EXIF the file carries into `src/data/photos.json`.
 
-To learn more about Next.js, take a look at the following resources:
+`order.txt` is the curation list and it does two jobs:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Only listed files are published**, top to bottom in the order given.
+- **Position sets placement.** One photograph per beat; each hangs at a
+  different size and a different edge of the page than the one before it, and
+  the first and last are always centred and large. Moving a line in `order.txt`
+  moves that photograph to a different spot.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Add a title with `filename | Title` (the title also becomes the URL slug, so
+every frame is linkable at `/photography#slug`).
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pushes to `main` deploy automatically. Preview any branch with `npx vercel`, and
+promote with `npx vercel --prod`.
