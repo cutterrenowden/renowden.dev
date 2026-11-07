@@ -225,7 +225,7 @@ function Game({ puzzle: p, live }: { puzzle: Puzzle; live: boolean }) {
           })}
           {covered && (
             <div className={styles.cover}>
-              <p className="label text-ink-muted">{s.ms ? "Paused" : "Ready when you are"}</p>
+              {s.ms ? <p className="label text-ink-muted">Paused</p> : null}
               <button type="button" className={styles.start} onClick={() => dispatch({ type: "run", on: true })}>
                 {s.ms ? "Resume" : "Start"}
               </button>
