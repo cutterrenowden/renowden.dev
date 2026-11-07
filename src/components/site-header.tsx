@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const NAV = [{ href: "/photography", label: "Photography" }];
+const NAV = [
+  { href: "/photography", label: "Photography" },
+  { href: "/crosswords", label: "Crosswords" },
+];
 
 export function SiteHeader() {
   const pathname = usePathname();
