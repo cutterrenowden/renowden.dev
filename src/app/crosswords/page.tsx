@@ -1,44 +1,35 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Progress } from "@/components/crossword/progress";
+import { CrosswordList } from "@/components/crossword/crossword-list";
 import { listCrosswords } from "@/lib/crosswords";
 
 export const metadata: Metadata = {
   title: "Crosswords",
-  description: "Crosswords by Cutter Renowden.",
+  description: "Crosswords by Cutter Renowden, as seen in the Yale Daily News.",
   alternates: { canonical: "/crosswords" },
 };
 
 export default function CrosswordsPage() {
-  const puzzles = listCrosswords();
+  // Only what the list needs; answers and clues stay out of the page payload.
+  const puzzles = listCrosswords().map(({ slug, title, date, width, height, version }) => ({
+    slug,
+    title,
+    date,
+    width,
+    height,
+    version,
+  }));
   return (
     <div className="mx-auto max-w-[1200px] px-6 pt-6 pb-24 md:px-10 md:pt-14 md:pb-36">
-      <h1 className="label text-ink-muted">Crosswords</h1>
+      <h1 className="sr-only">Crosswords</h1>
       {puzzles.length === 0 ? (
-        <p className="mt-8 border-t border-rule pt-8 text-[15px] text-ink-muted">
+        <p className="border-t border-rule pt-8 text-[15px] text-ink-muted">
           Drop a .puz file into <code className="text-ink">src/data/crosswords/</code>.
         </p>
       ) : (
-        <ul className="mt-8 border-t border-rule">
-          {puzzles.map((p) => (
-            <li key={p.slug} className="border-b border-rule">
-              <Link
-                href={`/crosswords/${p.slug}`}
-                className="group flex flex-wrap items-baseline gap-x-6 gap-y-2 py-6"
-              >
-                <span className="text-[22px] font-medium tracking-tight">
-                  <span className="link-rule">{p.title}</span>
-                </span>
-                <span className="label text-ink-faint">
-                  {p.width}×{p.height}
-                </span>
-                <span className="ml-auto">
-                  <Progress slug={p.slug} version={p.version} />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <CrosswordList puzzles={puzzles}>
+          As seen in the{" "}
+          <span className="underline decoration-yale decoration-1 underline-offset-4">Yale Daily News</span>
+        </CrosswordList>
       )}
     </div>
   );

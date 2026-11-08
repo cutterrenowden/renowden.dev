@@ -14,6 +14,8 @@ export type Entry = {
 
 export type Puzzle = {
   slug: string;
+  /** ISO date (YYYY-MM-DD), taken from the file name; empty when the name has none. */
+  date: string;
   title: string;
   author: string;
   copyright: string;
@@ -30,7 +32,7 @@ export type Puzzle = {
   version: string;
 };
 
-export function parsePuz(bytes: Uint8Array, slug: string): Puzzle {
+export function parsePuz(bytes: Uint8Array, slug: string, date = ""): Puzzle {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const ascii = (from: number, to: number) => String.fromCharCode(...bytes.subarray(from, to));
   const fail = (why: string) => new Error(`${slug}.puz: ${why}`);
@@ -115,6 +117,7 @@ export function parsePuz(bytes: Uint8Array, slug: string): Puzzle {
 
   return {
     slug,
+    date,
     title: title || slug,
     author,
     copyright,

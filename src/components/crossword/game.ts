@@ -10,10 +10,14 @@ type Sel = { i: number; dir: Dir };
 /** What survives a reload. */
 export type Saved = { fills: string[]; marks: Mark[]; ms: number; solved: boolean };
 
+/** A one-time notice: the puzzle was just solved, or the grid just filled up with a mistake in it. */
+export type Flash = "solved" | "wrong" | null;
+
 export type State = Saved & {
   sel: Sel;
   rebus: boolean;
   running: boolean;
+  flash: Flash;
 };
 
 export type Action =
@@ -30,7 +34,8 @@ export type Action =
   | { type: "del" }
   | { type: "rebus" }
   | { type: "check" | "reveal"; scope: Scope }
-  | { type: "clear" };
+  | { type: "clear" }
+  | { type: "dismiss" };
 
 export type Geometry = {
   of: { a?: Entry; d?: Entry }[];
@@ -71,6 +76,7 @@ export function initial(p: Puzzle, g: Geometry, saved: Saved | null): State {
     sel: { i: first.cells[0], dir: first.dir },
     rebus: false,
     running: false,
+    flash: null,
   };
 }
 
@@ -145,7 +151,20 @@ function finish(p: Puzzle, g: Geometry, s: State): State {
   return { ...s, solved: true, running: false, rebus: false };
 }
 
+const full = (g: Geometry, s: State) => !s.rebus && g.white.every((i) => s.fills[i]);
+
+// Notices fire on the change, not the condition: a grid that loads solved or full stays quiet, and
+// overwriting squares in a full grid doesn't nag again.
 export function reduce(p: Puzzle, g: Geometry, prev: State, a: Action): State {
+  if (a.type === "dismiss") return prev.flash ? { ...prev, flash: null } : prev;
+  const next = step(p, g, prev, a);
+  if (next === prev) return prev;
+  if (next.solved && !prev.solved) return { ...next, flash: "solved" };
+  if (!next.solved && full(g, next) && !full(g, prev)) return { ...next, flash: "wrong" };
+  return next;
+}
+
+function step(p: Puzzle, g: Geometry, prev: State, a: Action): State {
   switch (a.type) {
     case "run":
       return prev.solved || prev.running === a.on ? prev : { ...prev, running: a.on, rebus: false };

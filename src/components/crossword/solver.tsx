@@ -10,6 +10,7 @@ import {
   type CSSProperties,
   type MouseEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import type { Dir, Entry, Puzzle } from "@/lib/puz";
 import { MARK, fmt, geometry, initial, other, reduce, type Action, type State } from "./game";
 import { load, save } from "./save";
@@ -88,7 +89,11 @@ function Game({ puzzle: p, live }: { puzzle: Puzzle; live: boolean }) {
     const onKey = (ev: KeyboardEvent) => {
       const target = ev.target as HTMLElement | null;
       if (ev.metaKey || ev.ctrlKey || ev.altKey || target?.closest("input, textarea, select")) return;
-      const { running, solved, rebus } = latest.current;
+      const { running, solved, rebus, flash } = latest.current;
+      if (flash) {
+        if (ev.key === "Escape") dispatch({ type: "dismiss" });
+        return;
+      }
       if (!running && !solved) return;
       const k = ev.key;
       if (target?.closest("button") && (k === "Enter" || k === " ")) return;
@@ -223,6 +228,15 @@ function Game({ puzzle: p, live }: { puzzle: Puzzle; live: boolean }) {
               </div>
             );
           })}
+          {s.flash && (
+            <Notice
+              flash={s.flash}
+              title={p.title}
+              ms={s.ms}
+              revealed={s.marks.filter((m) => m === MARK.shown).length}
+              onClose={() => dispatch({ type: "dismiss" })}
+            />
+          )}
           {covered && (
             <div className={styles.cover}>
               {s.ms ? <p className="label text-ink-muted">Paused</p> : null}
@@ -299,6 +313,94 @@ function Game({ puzzle: p, live }: { puzzle: Puzzle; live: boolean }) {
         ))}
       </div>
     </div>
+  );
+}
+
+// "45 seconds", "12:34 minutes", "1:02:05 hours"
+const spoken = (ms: number) => {
+  const t = Math.floor(ms / 1000);
+  if (t < 60) return `${t} seconds`;
+  return `${fmt(ms)} ${t < 3600 ? "minutes" : "hours"}`;
+};
+
+function Notice({
+  flash,
+  title,
+  ms,
+  revealed,
+  onClose,
+}: {
+  flash: "solved" | "wrong";
+  title: string;
+  ms: number;
+  revealed: number;
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  // The share sheet on phones (Messages is one tap away); a copied message where there isn't one.
+  // Messages can't link a word, so the URL goes on its own line and iMessage turns it into a
+  // preview card titled with the puzzle's name. It's sent inside `text`, not as a separate `url`:
+  // given both, Apple's share sheet tends to keep the URL and drop the sentence.
+  const share = async () => {
+    const url = location.origin + location.pathname;
+    const reveals = revealed === 0 ? "no reveals" : revealed === 1 ? "1 reveal" : `${revealed} reveals`;
+    const message = `I solved the ${title} crossword in ${spoken(ms)} with ${reveals}!\n${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: message });
+      } catch {
+        // Closing the sheet rejects; nothing to do.
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+    } catch {}
+  };
+
+  // Portaled to <body> so the grid's container/stacking context can't position or clip it.
+  return createPortal(
+    <div className={styles.backdrop} onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="notice-title"
+        className={styles.modal}
+        onClick={(ev) => ev.stopPropagation()}
+      >
+        <p className={`label ${styles.kicker}`}>
+          {title}
+          {revealed ? ` · ${revealed} revealed` : ""}
+        </p>
+        {flash === "solved" ? (
+          <>
+            <h2 id="notice-title">Congrats!</h2>
+            <p className={styles.time}>{fmt(ms)}</p>
+            <div className={styles.actions}>
+              <button type="button" className={styles.primary} onClick={share}>
+                {copied ? "Copied" : "Share"}
+              </button>
+              <button type="button" className={styles.quiet} onClick={onClose}>
+                Close
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 id="notice-title">Not quite</h2>
+            <p className={styles.sub}>At least one square is wrong.</p>
+            <div className={styles.actions}>
+              <button type="button" className={styles.primary} onClick={onClose}>
+                Keep trying
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>,
+    document.body,
   );
 }
 

@@ -12,6 +12,8 @@
   --ink-muted: #6e6b63;
   --ink-faint: #a8a49a;
   --rule: #e3e0da;
+  /* The one accent, kept to small marks: Yale Blue. */
+  --yale: #00356b;
 }
 
 @theme inline {
@@ -21,6 +23,7 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-faint: var(--ink-faint);
   --color-rule: var(--rule);
+  --color-yale: var(--yale);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
