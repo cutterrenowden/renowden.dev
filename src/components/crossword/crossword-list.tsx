@@ -8,11 +8,8 @@ export type Item = { slug: string; title: string; date: string; width: number; h
 
 const sizeOf = (p: Item) => `${p.width}×${p.height}`;
 
-// MMDDYYYY, split by hand so the date never shifts with the viewer's time zone.
-const formatDate = (iso: string) => {
-  const [y, m, d] = iso.split("-");
-  return `${m}${d}${y}`;
-};
+// YYYYMMDD: reads in the same order it sorts. Split by hand so time zones can't shift it.
+const formatDate = (iso: string) => iso.replaceAll("-", "");
 
 /** The puzzle list, with a size filter and `children` centered in the bar above it. */
 export function CrosswordList({ puzzles, children }: { puzzles: Item[]; children?: ReactNode }) {
