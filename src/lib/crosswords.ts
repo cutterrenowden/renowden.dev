@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { Metadata } from "next";
 import { parsePuz, type Puzzle } from "./puz";
 
 // Every .puz in this folder is published at /crosswords/<file name>, read at build time.
@@ -28,4 +29,16 @@ export function listCrosswords(): Puzzle[] {
 
 export function getCrossword(slug: string): Puzzle | undefined {
   return listCrosswords().find((p) => p.slug === slug);
+}
+
+/**
+ * Link-preview fields for a crossword page. A page that sets neither inherits the photography
+ * card from the root layout; the image itself comes from the opengraph-image.tsx beside the page.
+ */
+export function shareCard(title: string, description: string, url: string): Pick<Metadata, "openGraph" | "twitter"> {
+  return {
+    openGraph: { title: `${title} — Cutter Renowden`, description, url, siteName: "Cutter Renowden", type: "website" },
+    // Title, description and image fall through from openGraph.
+    twitter: { card: "summary_large_image" },
+  };
 }

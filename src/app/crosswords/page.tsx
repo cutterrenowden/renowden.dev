@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { CrosswordList } from "@/components/crossword/crossword-list";
-import { listCrosswords } from "@/lib/crosswords";
+import { listCrosswords, shareCard } from "@/lib/crosswords";
+
+const description = "Crosswords by Cutter Renowden, as seen in the Yale Daily News.";
 
 export const metadata: Metadata = {
   title: "Crosswords",
-  description: "Crosswords by Cutter Renowden, as seen in the Yale Daily News.",
+  description,
   alternates: { canonical: "/crosswords" },
+  ...shareCard("Crosswords", description, "/crosswords"),
 };
 
 export default function CrosswordsPage() {

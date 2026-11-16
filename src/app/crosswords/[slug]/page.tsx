@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Solver } from "@/components/crossword/solver";
-import { getCrossword, listCrosswords } from "@/lib/crosswords";
+import { getCrossword, listCrosswords, shareCard } from "@/lib/crosswords";
 
 // Every puzzle is built ahead of time from src/data/crosswords; anything else is a 404.
 export const dynamicParams = false;
@@ -13,10 +13,13 @@ export function generateStaticParams() {
 export async function generateMetadata(props: PageProps<"/crosswords/[slug]">): Promise<Metadata> {
   const p = getCrossword((await props.params).slug);
   if (!p) return {};
+  const description = `A ${p.width}×${p.height} crossword${p.author ? ` by ${p.author}` : ""}.`;
+  const url = `/crosswords/${p.slug}`;
   return {
     title: p.title,
-    description: `A ${p.width}×${p.height} crossword${p.author ? ` by ${p.author}` : ""}.`,
-    alternates: { canonical: `/crosswords/${p.slug}` },
+    description,
+    alternates: { canonical: url },
+    ...shareCard(p.title, description, url),
   };
 }
 
