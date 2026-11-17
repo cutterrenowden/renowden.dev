@@ -18,12 +18,12 @@
     "orientation": "landscape"
   },
   {
-    "slug": "new-york-new-york",
-    "src": "/photography/new-york-new-york.jpg",
+    "slug": "brooklyn-bridge",
+    "src": "/photography/brooklyn-bridge.jpg",
     "width": 2400,
     "height": 1920,
     "blurDataURL": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAACwAwCdASoUABAAPu1iqU2ppaQiMAgBMB2JZQCdAB5thkRnXgDqwAD+6UIkPPqdrgQciDQ6tiCmG6UExsXkkS8BbxLjEF5TWMRBydJV35KDIPBL+2FfZPoBkwAPU+Bpjz+6E4AA",
-    "title": null,
+    "title": "Brooklyn Bridge",
     "collection": null,
     "location": "New York, New York",
     "camera": "Sony a6700",
@@ -36,12 +36,12 @@
     "orientation": "landscape"
   },
   {
-    "slug": "new-haven-connecticut",
-    "src": "/photography/new-haven-connecticut.jpg",
+    "slug": "durfee-hall",
+    "src": "/photography/durfee-hall.jpg",
     "width": 1800,
     "height": 2400,
     "blurDataURL": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQBACdASoUABsAPu1uqlEppiOiqAqpMB2JYwCdABEl/FS6I987ShHxAwi/qYN4AAD+7pIUIbQhqcHBpJWPQSHdE2BqtYYBN1Tfqa5PhTVo/IKl30zyfsNHo09L4fb6CPtejAgN6mgAAA==",
-    "title": null,
+    "title": "Durfee Hall",
     "collection": null,
     "location": "New Haven, Connecticut",
     "camera": "Sony a6700",
