@@ -1,7 +1,7 @@
 [
   {
-    "slug": "cathedral-rock-sedona",
-    "src": "/photography/cathedral-rock-sedona.jpg",
+    "slug": "cathedral-rock",
+    "src": "/photography/cathedral-rock.jpg",
     "width": 2400,
     "height": 1714,
     "blurDataURL": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAACwAwCdASoUAA4APu1iqk2ppaQiMAgBMB2JZwAAW++boVZWDBRycAD+8qj9yv6rcbSKwZmfqUiem0yb8TCUNx1WGGpAAA==",
@@ -18,8 +18,44 @@
     "orientation": "landscape"
   },
   {
-    "slug": "dsc00404-10-2",
-    "src": "/photography/dsc00404-10-2.jpg",
+    "slug": "new-york-new-york",
+    "src": "/photography/new-york-new-york.jpg",
+    "width": 2400,
+    "height": 1920,
+    "blurDataURL": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAACwAwCdASoUABAAPu1iqU2ppaQiMAgBMB2JZQCdAB5thkRnXgDqwAD+6UIkPPqdrgQciDQ6tiCmG6UExsXkkS8BbxLjEF5TWMRBydJV35KDIPBL+2FfZPoBkwAPU+Bpjz+6E4AA",
+    "title": null,
+    "collection": null,
+    "location": "New York, New York",
+    "camera": "Sony a6700",
+    "lens": null,
+    "focalLength": "13mm",
+    "aperture": "f/2.2",
+    "shutter": "1/800s",
+    "iso": "ISO 250",
+    "stack": null,
+    "orientation": "landscape"
+  },
+  {
+    "slug": "new-haven-connecticut",
+    "src": "/photography/new-haven-connecticut.jpg",
+    "width": 1800,
+    "height": 2400,
+    "blurDataURL": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQBACdASoUABsAPu1uqlEppiOiqAqpMB2JYwCdABEl/FS6I987ShHxAwi/qYN4AAD+7pIUIbQhqcHBpJWPQSHdE2BqtYYBN1Tfqa5PhTVo/IKl30zyfsNHo09L4fb6CPtejAgN6mgAAA==",
+    "title": null,
+    "collection": null,
+    "location": "New Haven, Connecticut",
+    "camera": "Sony a6700",
+    "lens": "E 28-75mm F2.8 A063",
+    "focalLength": "75mm",
+    "aperture": "f/4",
+    "shutter": "1/750s",
+    "iso": "ISO 400",
+    "stack": null,
+    "orientation": "portrait"
+  },
+  {
+    "slug": "bryce-canyon-national-park-utah",
+    "src": "/photography/bryce-canyon-national-park-utah.jpg",
     "width": 2400,
     "height": 1600,
     "blurDataURL": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JYwCdACHotmr0mA1i38gAAP7q6eh8jm+tj3tzHJweda+qmsCYVgeVGRlTOcmtlPjJZWvuQmK0nQHGoi8bS7UwV0mr20yxTEtfUZnAAAA=",
@@ -36,8 +72,8 @@
     "orientation": "landscape"
   },
   {
-    "slug": "rocky-mountain-national-park",
-    "src": "/photography/rocky-mountain-national-park.jpg",
+    "slug": "rocky-mountain-national-park-colorado",
+    "src": "/photography/rocky-mountain-national-park-colorado.jpg",
     "width": 2400,
     "height": 1600,
     "blurDataURL": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAQBACdASoUAA0APu1kqU2ppaQiMAgBMB2JQBOmUJdAAfI/WNphY5dr4AD+8ds8O5FWTdSot8jpely7g1Kr/9VLObID7WnRDCZRkxBKqXetuVZfgN3rEAXbA1N+zx9iHxk8RskPTZE4PAAA",
@@ -54,8 +90,8 @@
     "orientation": "landscape"
   },
   {
-    "slug": "mountain-storm-sunset-2-2",
-    "src": "/photography/mountain-storm-sunset-2-2.jpg",
+    "slug": "rio-verde-arizona",
+    "src": "/photography/rio-verde-arizona.jpg",
     "width": 2400,
     "height": 1600,
     "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABwAwCdASoUAA0APu1orU2ppqSiMAgBMB2JZQAAWzd9yPVUv4AA/suKtkWfeNK/i58jSj/OJyo7pEsjJfPEqSsB1UcNDixsMAA=",
@@ -65,15 +101,15 @@
     "camera": "Sony a6700",
     "lens": null,
     "focalLength": "13mm",
-    "aperture": "f/4.0",
+    "aperture": "f/4",
     "shutter": "1/800s",
     "iso": "ISO 6400",
     "stack": null,
     "orientation": "landscape"
   },
   {
-    "slug": "dsc01929-3",
-    "src": "/photography/dsc01929-3.jpg",
+    "slug": "colorado",
+    "src": "/photography/colorado.jpg",
     "width": 1600,
     "height": 2400,
     "blurDataURL": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACQBACdASoUAB4APu1mqk8ppaOiKA1RMB2JZQDDrA0563/LCUmUAwns4VFOIAAA/u/XIhac/Za/TUlgmdgSyOvWCnUxTqwGHu/eOlbdywg/dZ4WP4xaDy6ubqvmleyP2Z8BbT9KhSnWcG8+RFr/UhggpAuutrZqSm/tLIAA",
@@ -90,8 +126,8 @@
     "orientation": "portrait"
   },
   {
-    "slug": "img-4259-3",
-    "src": "/photography/img-4259-3.jpg",
+    "slug": "amazon-rainforest-ecuador",
+    "src": "/photography/amazon-rainforest-ecuador.jpg",
     "width": 1800,
     "height": 2400,
     "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABsAPu1kqU4ppaOiMAgBMB2JZQCdMtDDTa8h98ywRM/rdV4g55gAAP3eFoT+p1gtsr+JVnfCXTrjhqXfaYjS3fWgFQZZEQHuM+tpvnBRn9DUhCRmT6UdykK/4MQUJjngZVgF4Bpj5EdmwEwkLYRoD4e5seNXZ3bFcjwAAAA=",
@@ -108,8 +144,8 @@
     "orientation": "portrait"
   },
   {
-    "slug": "dsc01783arw-edited",
-    "src": "/photography/dsc01783arw-edited.jpg",
+    "slug": "greer-arizona",
+    "src": "/photography/greer-arizona.jpg",
     "width": 2400,
     "height": 1600,
     "blurDataURL": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAABQAwCdASoUAA0APu1iqU2ppaQiMAgBMB2JaQAARhNMAiATwAD+6/59uNN1t6wT7IIDrP+L9Lk7QElBLfUuRNCAAAA=",
