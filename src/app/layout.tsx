@@ -16,11 +16,11 @@ export const metadata: Metadata = {
     default: "Cutter Renowden",
     template: "%s — Cutter Renowden",
   },
-  description: "Photography by Cutter Renowden.",
+  description: "Cutter Renowden's personal site.",
   alternates: { canonical: "/photography" },
   openGraph: {
     title: "Cutter Renowden",
-    description: "Photography by Cutter Renowden.",
+    description: "Cutter Renowden's personal site.",
     url: "https://renowden.dev/photography",
     siteName: "Cutter Renowden",
     type: "website",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Cutter Renowden",
-    description: "Photography by Cutter Renowden.",
+    description: "Cutter Renowden's personal site.",
     images: ["/og.jpg"],
   },
 };

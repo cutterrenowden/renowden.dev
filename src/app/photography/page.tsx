@@ -4,7 +4,7 @@ import { collections, photos } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "Photography",
-  description: "Photography by Cutter Renowden.",
+  description: "Cutter Renowden's personal site.",
 };
 
 export default function PhotographyPage() {
